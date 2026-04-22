@@ -1,4 +1,4 @@
-# Tenant Maintenance Portal
+# SteadyTenant Portal
 
 A simple maintenance request tool built for small landlords managing under 100 units.
 

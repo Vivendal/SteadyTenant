@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SteadyTenant – Landlord Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f0f0f;
+      color: #f0f0f0;
+      min-height: 100vh;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 60px;
+      border-bottom: 1px solid #1e1e1e;
+    }
+
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+      text-decoration: none;
+    }
+
+    .logo span { color: #6ee7b7; }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-right span {
+      color: #555;
+      font-size: 0.85rem;
+    }
+
+    .btn-small {
+      background: #6ee7b7;
+      color: #0f0f0f;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 30px;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .dashboard-header h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .dashboard-header h1 span { color: #6ee7b7; }
+
+    .copy-link-btn {
+      background: transparent;
+      border: 1px solid #2a2a2a;
+      color: #aaa;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .copy-link-btn:hover { border-color: #6ee7b7; color: #6ee7b7; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: #141414;
+      border: 1px solid #1e1e1e;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .stat-card .number {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .stat-card .label {
+      font-size: 0.8rem;
+      color: #555;
+      margin-top: 4px;
+    }
+
+    .stat-card.urgent .number { color: #ef4444; }
+    .stat-card.progress .number { color: #f59e0b; }
+    .stat-card.done .number { color: #6ee7b7; }
+
+    .filters {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 7px 16px;
+      border-radius: 20px;
+      border: 1px solid #2a2a2a;
+      background: transparent;
+      color: #666;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover { border-color: #6ee7b7; color: #fff; }
+    .filter-btn.active { border-color: #6ee7b7; color: #6ee7b7; background: #0d1f18; }
+
+    .tickets {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .ticket {
+      background: #141414;
+      border: 1px solid #1e1e1e;
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      transition: border-color 0.2s;
+      cursor: pointer;
+    }
+
+    .ticket:hover { border-color: #2e2e2e; }
+    .ticket.urgent { border-left: 3px solid #ef4444; }
+    .ticket.medium { border-left: 3px solid #f59e0b; }
+    .ticket.low { border-left: 3px solid #6ee7b7; }
+
+    .ticket-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+    }
+
+    .ticket-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 0.8rem;
+      color: #555;
+    }
+
+    .ticket-meta span { display: flex; align-items: center; gap: 4px; }
+
+    .ticket-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .status-new { background: #1a1a2e; color: #818cf8; border: 1px solid #2e2e4e; }
+    .status-scheduled { background: #1c1a0e; color: #f59e0b; border: 1px solid #3a3010; }
+    .status-progress { background: #1c1a0e; color: #fb923c; border: 1px solid #3a2510; }
+    .status-done { background: #0d1f18; color: #6ee7b7; border: 1px solid #1a3d2e; }
+
+    .status-select {
+      background: #0f0f0f;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      color: #aaa;
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .status-select:focus { border-color: #6ee7b7; }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: #333;
+    }
+
+    .empty-state .icon { font-size: 3rem; margin-bottom: 16px; }
+    .empty-state p { font-size: 0.9rem; }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #0d1f18;
+      border: 1px solid #6ee7b7;
+      color: #6ee7b7;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="logo">Steady<span>Tenant</span></a>
+    <div class="nav-right">
+      <span>👋 Welcome, Landlord</span>
+      <a href="request.html" class="btn-small">Preview Tenant Form</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <div class="dashboard-header">
+      <h1>Maintenance <span>Dashboard</span></h1>
+      <button class="copy-link-btn" onclick="copyTenantLink()">📋 Copy Tenant Form Link</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="number" id="totalCount">4</div>
+        <div class="label">Total Requests</div>
+      </div>
+      <div class="stat-card urgent">
+        <div class="number" id="urgentCount">1</div>
+        <div class="label">Urgent</div>
+      </div>
+      <div class="stat-card progress">
+        <div class="number" id="progressCount">2</div>
+        <div class="label">In Progress</div>
+      </div>
+      <div class="stat-card done">
+        <div class="number" id="doneCount">1</div>
+        <div class="label">Resolved</div>
+      </div>
+    </div>
+
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterTickets('all', this)">All</button>
+      <button class="filter-btn" onclick="filterTickets('new', this)">New</button>
+      <button class="filter-btn" onclick="filterTickets('scheduled', this)">Scheduled</button>
+      <button class="filter-btn" onclick="filterTickets('progress', this)">In Progress</button>
+      <button class="filter-btn" onclick="filterTickets('done', this)">Done</button>
+    </div>
+
+    <div class="tickets" id="ticketList"></div>
+
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <div class="icon">📭</div>
+      <p>No tickets found for this filter.</p>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast">✓ Link copied to clipboard!</div>
+
+  <script>
+    const tickets = [
+      { id: 1, title: "Leaking pipe under kitchen sink", tenant: "John Smith", unit: "Apt 2A", priority: "urgent", status: "new", date: "Today, 9:14am" },
+      { id: 2, title: "Heating not working in bedroom", tenant: "Sarah Miller", unit: "Apt 3B", priority: "medium", status: "progress", date: "Yesterday, 4:30pm" },
+      { id: 3, title: "Broken window latch", tenant: "Mike Johnson", unit: "Apt 1C", priority: "medium", status: "scheduled", date: "Apr 20, 11:00am" },
+      { id: 4, title: "Light bulb out in hallway", tenant: "Emma Davis", unit: "Apt 4A", priority: "low", status: "done", date: "Apr 18, 2:15pm" },
+    ];
+
+    function renderTickets(filter = 'all') {
+      const list = document.getElementById('ticketList');
+      const empty = document.getElementById('emptyState');
+      const filtered = filter === 'all' ? tickets : tickets.filter(t => t.status === filter);
+
+      if (filtered.length === 0) {
+        list.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+
+      empty.style.display = 'none';
+      list.innerHTML = filtered.map(t => `
+        <div class="ticket ${t.priority}" data-id="${t.id}">
+          <div>
+            <div class="ticket-title">${t.title}</div>
+            <div class="ticket-meta">
+              <span>👤 ${t.tenant}</span>
+              <span>🏠 ${t.unit}</span>
+              <span>🕐 ${t.date}</span>
+            </div>
+          </div>
+          <div class="ticket-right">
+            <span class="status-badge status-${t.status}">${statusLabel(t.status)}</span>
+            <select class="status-select" onchange="updateStatus(${t.id}, this.value)">
+              <option value="new" ${t.status === 'new' ? 'selected' : ''}>New</option>
+              <option value="scheduled" ${t.status === 'scheduled' ? 'selected' : ''}>Scheduled</option>
+              <option value="progress" ${t.status === 'progress' ? 'selected' : ''}>In Progress</option>
+              <option value="done" ${t.status === 'done' ? 'selected' : ''}>Done</option>
+            </select>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function statusLabel(status) {
+      const labels = { new: 'NEW', scheduled: 'SCHEDULED', progress: 'IN PROGRESS', done: 'DONE' };
+      return labels[status] || status;
+    }
+
+    function updateStatus(id, newStatus) {
+      const ticket = tickets.find(t => t.id === id);
+      if (ticket) {
+        ticket.status = newStatus;
+        renderTickets(currentFilter);
+        updateStats();
+        showToast('Status updated!');
+      }
+    }
+
+    function filterTickets(filter, btn) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderTickets(filter);
+    }
+
+    function updateStats() {
+      document.getElementById('totalCount').textContent = tickets.length;
+      document.getElementById('urgentCount').textContent = tickets.filter(t => t.priority === 'urgent').length;
+      document.getElementById('progressCount').textContent = tickets.filter(t => t.status === 'progress').length;
+      document.getElementById('doneCount').textContent = tickets.filter(t => t.status === 'done').length;
+    }
+
+    function copyTenantLink() {
+      navigator.clipboard.writeText(window.location.origin + '/SteadyTenant/request.html');
+      showToast('✓ Link copied to clipboard!');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    let currentFilter = 'all';
+    renderTickets();
+    updateStats();
+  </script>
+
+</body>
+</html>

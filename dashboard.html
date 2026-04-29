@@ -296,14 +296,26 @@
   <div class="toast" id="toast">✓ Link copied to clipboard!</div>
 
   <script>
-    const tickets = [
-      { id: 1, title: "Leaking pipe under kitchen sink", tenant: "John Smith", unit: "Apt 2A", priority: "urgent", status: "new", date: "Today, 9:14am" },
-      { id: 2, title: "Heating not working in bedroom", tenant: "Sarah Miller", unit: "Apt 3B", priority: "medium", status: "progress", date: "Yesterday, 4:30pm" },
-      { id: 3, title: "Broken window latch", tenant: "Mike Johnson", unit: "Apt 1C", priority: "medium", status: "scheduled", date: "Apr 20, 11:00am" },
-      { id: 4, title: "Light bulb out in hallway", tenant: "Emma Davis", unit: "Apt 4A", priority: "low", status: "done", date: "Apr 18, 2:15pm" },
-    ];
+  
+    const SUPABASE_URL = 'https://akjcoiowygvewzarryaj.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFramNvaW93eWd2ZXd6YXJyeWFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczNTcyNTIsImV4cCI6MjA5MjkzMzI1Mn0.KMiq0h8RJlihPipotG6jOpjMUAtvyXxJla94aUmyFfg';
 
-    function renderTickets(filter = 'all') {
+    let tickets = [];
+    let currentFilter = 'all';
+
+    async function loadTickets() {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/tickets?order=created_at.desc`, {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        }
+      });
+      tickets = await response.json();
+      renderTickets();
+      updateStats();
+    }
+
+    function renderTickets(filter = currentFilter) {
       const list = document.getElementById('ticketList');
       const empty = document.getElementById('emptyState');
       const filtered = filter === 'all' ? tickets : tickets.filter(t => t.status === filter);
@@ -320,9 +332,9 @@
           <div>
             <div class="ticket-title">${t.title}</div>
             <div class="ticket-meta">
-              <span>👤 ${t.tenant}</span>
+              <span>👤 ${t.tenant_name}</span>
               <span>🏠 ${t.unit}</span>
-              <span>🕐 ${t.date}</span>
+              <span>🕐 ${new Date(t.created_at).toLocaleString()}</span>
             </div>
           </div>
           <div class="ticket-right">
@@ -343,14 +355,19 @@
       return labels[status] || status;
     }
 
-    function updateStatus(id, newStatus) {
-      const ticket = tickets.find(t => t.id === id);
-      if (ticket) {
-        ticket.status = newStatus;
-        renderTickets(currentFilter);
-        updateStats();
-        showToast('Status updated!');
-      }
+    async function updateStatus(id, newStatus) {
+      await fetch(`${SUPABASE_URL}/rest/v1/tickets?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+      await loadTickets();
+      showToast('Status updated!');
     }
 
     function filterTickets(filter, btn) {
@@ -379,9 +396,8 @@
       setTimeout(() => toast.classList.remove('show'), 2500);
     }
 
-    let currentFilter = 'all';
-    renderTickets();
-    updateStats();
+    loadTickets();
+
   </script>
 
 </body>

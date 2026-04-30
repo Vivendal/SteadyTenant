@@ -9,8 +9,8 @@ This is a focused, simple alternative for smaller landlords, who don't want to i
 
 ## Features (in progress)
 - [ ] Tenant request submission with photos
-- [ ] Landlord dashboard with status tracking
-- [ ] Priority levels: Low, Medium, Urgent
+- [X] Landlord dashboard with status tracking
+- [X] Priority levels: Low, Medium, Urgent
 - [ ] Contractor/assignee field
 - [ ] Email notifications
 

@@ -302,6 +302,7 @@
 
     let tickets = [];
     let currentFilter = 'all';
+    let showDone = false;
 
     async function loadTickets() {
       const response = await fetch(`${SUPABASE_URL}/rest/v1/tickets?order=created_at.desc`, {
@@ -318,7 +319,9 @@
     function renderTickets(filter = currentFilter) {
       const list = document.getElementById('ticketList');
       const empty = document.getElementById('emptyState');
-      const filtered = filter === 'all' ? tickets : tickets.filter(t => t.status === filter);
+      const filtered = filter === 'all'
+        ? tickets.filter(t => showDone ? true : t.status !== 'done')
+        : tickets.filter(t => t.status === filter);
 
       if (filtered.length === 0) {
         list.innerHTML = '';
@@ -371,6 +374,14 @@
     }
 
     function filterTickets(filter, btn) {
+      if (filter === 'done') {
+        showDone = !showDone;
+        btn.textContent = showDone ? 'Hide Resolved ✓' : 'Done';
+        btn.classList.toggle('active', showDone);
+        currentFilter = showDone ? 'done' : 'all';
+        renderTickets(currentFilter);
+        return;
+      }
       currentFilter = filter;
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');

@@ -246,6 +246,7 @@
     <a href="index.html" class="logo">Steady<span>Tenant</span></a>
     <div class="nav-right">
       <span>👋 Welcome, Landlord</span>
+      <button onclick="logout()" style="background:transparent; border:1px solid #2a2a2a; color:#666; padding:6px 14px; border-radius:6px; font-size:0.8rem; cursor:pointer;">Logout</button>
       <a href="request.html" class="btn-small">Preview Tenant Form</a>
     </div>
   </nav>
@@ -296,7 +297,9 @@
   <div class="toast" id="toast">✓ Link copied to clipboard!</div>
 
   <script>
-  
+  // Auth check — redirect to login if not authenticated
+    const session = localStorage.getItem('sb_session');
+    if (!session) window.location.href = 'login.html';
     const SUPABASE_URL = 'https://akjcoiowygvewzarryaj.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFramNvaW93eWd2ZXd6YXJyeWFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczNTcyNTIsImV4cCI6MjA5MjkzMzI1Mn0.KMiq0h8RJlihPipotG6jOpjMUAtvyXxJla94aUmyFfg';
 
@@ -396,7 +399,7 @@
     }
 
     function copyTenantLink() {
-      navigator.clipboard.writeText(window.location.origin + '/SteadyTenant/request.html');
+      navigator.clipboard.writeText(window.location.origin + '/request.html');
       showToast('✓ Link copied to clipboard!');
     }
 
@@ -406,7 +409,11 @@
       toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 2500);
     }
-
+    
+    function logout() {
+      localStorage.removeItem('sb_session');
+      window.location.href = 'login.html';
+    }
     loadTickets();
 
   </script>

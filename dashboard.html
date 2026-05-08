@@ -238,6 +238,47 @@
     }
 
     .toast.show { opacity: 1; }
+
+    .ticket-photo {
+      width: 52px;
+      height: 52px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #2a2a2a;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .ticket-photo:hover { transform: scale(1.05); }
+
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox.show { display: flex; }
+
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 12px;
+      box-shadow: 0 0 60px rgba(0,0,0,0.8);
+    }
+
+    .lightbox-close {
+      position: fixed;
+      top: 24px;
+      right: 30px;
+      color: #fff;
+      font-size: 2rem;
+      cursor: pointer;
+      line-height: 1;
+    }
   </style>
 </head>
 <body>
@@ -294,6 +335,11 @@
 
   </div>
 
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close">✕</span>
+    <img id="lightboxImg" src="" />
+  </div>
+
   <div class="toast" id="toast">✓ Link copied to clipboard!</div>
 
   <script>
@@ -344,6 +390,7 @@
             </div>
           </div>
           <div class="ticket-right">
+            ${t.photo_url ? `<img class="ticket-photo" src="${t.photo_url}" onclick="openLightbox('${t.photo_url}')" />` : ''}
             <span class="status-badge status-${t.status}">${statusLabel(t.status)}</span>
             <select class="status-select" onchange="updateStatus(${t.id}, this.value)">
               <option value="new" ${t.status === 'new' ? 'selected' : ''}>New</option>
@@ -410,6 +457,15 @@
       setTimeout(() => toast.classList.remove('show'), 2500);
     }
     
+    function openLightbox(url) {
+      document.getElementById('lightboxImg').src = url;
+      document.getElementById('lightbox').classList.add('show');
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('show');
+    }
+
     function logout() {
       localStorage.removeItem('sb_session');
       window.location.href = 'login.html';

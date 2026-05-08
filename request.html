@@ -296,24 +296,7 @@
       }
     }
 
-    function submitRequest() {
-      const inputs = document.querySelectorAll('input[type="text"], textarea');
-      let valid = true;
-      inputs.forEach(input => {
-        if (!input.value.trim()) {
-          input.style.borderColor = '#ef4444';
-          valid = false;
-        } else {
-          input.style.borderColor = '#2a2a2a';
-        }
-      });
-
-      if (valid) {
-        document.querySelector('.form-card').style.display = 'none';
-        document.getElementById('successMsg').style.display = 'block';
-      }
-    }
-const SUPABASE_URL = 'https://akjcoiowygvewzarryaj.supabase.co';
+    const SUPABASE_URL = 'https://akjcoiowygvewzarryaj.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFramNvaW93eWd2ZXd6YXJyeWFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczNTcyNTIsImV4cCI6MjA5MjkzMzI1Mn0.KMiq0h8RJlihPipotG6jOpjMUAtvyXxJla94aUmyFfg';
 
     async function submitRequest() {
@@ -337,6 +320,30 @@ const SUPABASE_URL = 'https://akjcoiowygvewzarryaj.supabase.co';
       const priority = document.querySelector('.priority-btn.selected')?.textContent.trim().toLowerCase().replace('🟢 ', '').replace('🟡 ', '').replace('🔴 ', '');
       const access_time = document.querySelector('select').value;
 
+      // Handle photo upload
+      let photo_url = null;
+      const fileInput = document.querySelector('input[type="file"]');
+      if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const fileName = `${Date.now()}_${file.name}`;
+
+        const uploadResponse = await fetch(`${SUPABASE_URL}/storage/v1/object/ticket-photos/${fileName}`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': file.type,
+            'Cache-Control': '3600'
+          },
+          body: file
+        });
+
+        if (uploadResponse.ok) {
+          photo_url = `${SUPABASE_URL}/storage/v1/object/public/ticket-photos/${fileName}`;
+        }
+      }
+
+      // Save ticket to database
       const response = await fetch(`${SUPABASE_URL}/rest/v1/tickets`, {
         method: 'POST',
         headers: {
@@ -352,7 +359,8 @@ const SUPABASE_URL = 'https://akjcoiowygvewzarryaj.supabase.co';
           description,
           priority,
           status: 'new',
-          access_time
+          access_time,
+          photo_url
         })
       });
 

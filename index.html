@@ -3,15 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SteadyTenant – Maintenance Portal for Small Landlords</title>
+  <title>SteadyTenant – Maintenance Portal for Landlords</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Segoe UI', sans-serif; background: #0f0f0f; color: #f0f0f0; }
-    nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 60px; border-bottom: 1px solid #1e1e1e; }
-    .logo { font-size: 1.4rem; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
+
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 60px; border-bottom: 1px solid #1e1e1e; position: sticky; top: 0; background: #0f0f0f; z-index: 100; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: #fff; letter-spacing: -0.5px; text-decoration: none; }
     .logo span { color: #6ee7b7; }
     nav a { color: #aaa; text-decoration: none; margin-left: 30px; font-size: 0.9rem; transition: color 0.2s; }
     nav a:hover { color: #fff; }
+
     .hero { text-align: center; padding: 120px 20px 80px; max-width: 780px; margin: 0 auto; }
     .badge { display: inline-block; background: #1a1a1a; border: 1px solid #2e2e2e; color: #6ee7b7; font-size: 0.75rem; padding: 6px 14px; border-radius: 20px; margin-bottom: 24px; letter-spacing: 0.5px; }
     h1 { font-size: 3.2rem; font-weight: 800; line-height: 1.15; margin-bottom: 24px; letter-spacing: -1px; }
@@ -22,29 +24,126 @@
     .btn-primary:hover { opacity: 0.85; }
     .btn-secondary { background: transparent; color: #f0f0f0; padding: 14px 28px; border-radius: 8px; font-weight: 600; font-size: 0.95rem; text-decoration: none; border: 1px solid #2e2e2e; transition: border-color 0.2s; }
     .btn-secondary:hover { border-color: #6ee7b7; }
-    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; max-width: 900px; margin: 80px auto; padding: 0 30px; }
+
+    .section-header { text-align: center; margin-bottom: 50px; }
+    .section-header h2 { font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; }
+    .section-header h2 span { color: #6ee7b7; }
+    .section-header p { color: #555; font-size: 0.95rem; }
+
+    .features-section { max-width: 960px; margin: 80px auto; padding: 0 30px; }
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
     .card { background: #141414; border: 1px solid #1e1e1e; border-radius: 12px; padding: 28px; transition: border-color 0.2s; }
     .card:hover { border-color: #6ee7b7; }
     .card-icon { font-size: 1.6rem; margin-bottom: 14px; }
     .card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: #fff; }
     .card p { font-size: 0.875rem; color: #666; line-height: 1.6; }
+
+    .pricing-section { max-width: 960px; margin: 0 auto; padding: 80px 30px; border-top: 1px solid #1a1a1a; }
+    .pricing-coming-soon { background: #141414; border: 1px solid #1e1e1e; border-radius: 16px; padding: 60px; text-align: center; }
+    .pricing-coming-soon .icon { font-size: 2.5rem; margin-bottom: 20px; }
+    .pricing-coming-soon h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: 12px; }
+    .pricing-coming-soon h3 span { color: #6ee7b7; }
+    .pricing-coming-soon p { color: #555; font-size: 0.95rem; line-height: 1.7; max-width: 480px; margin: 0 auto 24px; }
+    .pricing-pill { display: inline-block; background: #0d1f18; border: 1px solid #6ee7b7; color: #6ee7b7; padding: 6px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin: 4px; }
+
     .social-proof { text-align: center; padding: 60px 20px; border-top: 1px solid #1a1a1a; color: #444; font-size: 0.85rem; letter-spacing: 0.5px; }
     .footer { text-align: center; padding: 30px; font-size: 0.8rem; color: #333; border-top: 1px solid #1a1a1a; }
   </style>
 </head>
 <body>
+
   <nav>
-    <div class="logo">Steady<span>Tenant</span></div>
+    <a href="#" class="logo">Steady<span>Tenant</span></a>
     <div>
-      <a href="#">Features</a>
-      <a href="login.html" style="color:#aaa; text-decoration:none; margin-left:30px; font-size:0.9rem;">Landlord Login</a>
-      <a href="#">Pricing</a>
-      <a href="#" class="btn-primary" style="padding: 8px 18px; border-radius: 6px; font-size:0.85rem;">Get Early Access</a>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="login.html">Landlord Login</a>
     </div>
   </nav>
+
   <section class="hero">
     <div class="badge">🚧 Built in public · Early access</div>
     <h1>Maintenance requests,<br/><span>finally under control.</span></h1>
-    <p class="subtitle">SteadyTenant is the simplest maintenance portal for landlords managing under 100 units.<br/>Tenants submit issues. You solve them. Everyone stays updated.</p>
+    <p class="subtitle">SteadyTenant is a simple maintenance portal for landlords managing under 100 units.<br/>Tenants submit issues. You solve them. Everyone stays updated.</p>
     <div class="cta-group">
-      <a href
+      <a href="login.html" class="btn-primary">Landlord Login →</a>
+      <a href="https://github.com/Vivendal/SteadyTenant" target="_blank" class="btn-secondary">View on GitHub →</a>
+    </div>
+  </section>
+
+  <section class="features-section" id="features">
+    <div class="section-header">
+      <h2>Everything you need, <span>nothing you don't.</span></h2>
+      <p>Built for landlords who want simple and reliable.</p>
+    </div>
+    <div class="features">
+      <div class="card">
+        <div class="card-icon">📋</div>
+        <h3>Tenant Request Form</h3>
+        <p>Tenants submit issues with a description, priority level, and preferred access time. No app download needed.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📷</div>
+        <h3>Photo Upload</h3>
+        <p>Tenants attach photos directly to their request. See the problem before you send anyone out.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📊</div>
+        <h3>Landlord Dashboard</h3>
+        <p>See all open tickets at a glance. Filter by status, track urgency, and never lose a request again.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔴</div>
+        <h3>Priority Levels</h3>
+        <p>Low, Medium, or Urgent — tenants set it, you act on it. Know what needs attention first.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔄</div>
+        <h3>Status Tracking</h3>
+        <p>Move tickets from New → Scheduled → In Progress → Done. Full visibility at every step.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔧</div>
+        <h3>Contractor Notes</h3>
+        <p>Assign a contractor, add notes, and keep the full repair history in one place.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔐</div>
+        <h3>Secure Login</h3>
+        <p>Your dashboard is protected. Only you can access tenant requests and update ticket status.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <h3>No Setup Needed</h3>
+        <p>Share the tenant form link, start receiving requests. No training, no onboarding.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pricing-section" id="pricing">
+    <div class="section-header">
+      <h2>Simple, <span>transparent pricing.</span></h2>
+      <p>We're still figuring out the best pricing model for small landlords.</p>
+    </div>
+    <div class="pricing-coming-soon">
+      <div class="icon">🚧</div>
+      <h3>Pricing <span>Coming Soon</span></h3>
+      <p>SteadyTenant is currently in early access. We're working on a pricing model that's fair for small landlords.</p>
+      <div>
+        <span class="pricing-pill">Free tier planned</span>
+        <span class="pricing-pill">Flat monthly fee</span>
+        <span class="pricing-pill">No per-unit pricing</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="social-proof">
+    BUILT FOR LANDLORDS WITH LESS THAN 100 UNITS · SIMPLE BY DESIGN · FOCUSED ON THE SOLUTION
+  </div>
+
+  <footer class="footer">
+    © 2026 SteadyTenant · Built in public by <a href="https://github.com/Vivendal" style="color:#6ee7b7; text-decoration:none;">Vivendal</a>
+  </footer>
+
+</body>
+</html>
